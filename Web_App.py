@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
+from sklearn.linear_model import LinearRegression
+import numpy as np
 import joblib
 import plotly.graph_objects as go
-import plotly.express as px
 
 # Load model
 model = joblib.load("xgboost_readmission_model.pkl")
@@ -152,72 +154,6 @@ if submit:
     st.plotly_chart(fig, use_container_width=True)
 
 
-
-st.title("🌍 Global Diabetes Prevalence Trends and Forecasts")
-
-# Updated historical + forecast data for global prevalence (1990–2045)
-trend_data = {
-    "Year": list(range(1990, 2050, 5)),  # 1990 to 2045 in 5-year steps
-    "Prevalence (%)": [4.7, 5.1, 5.6, 6.2, 6.8, 7.3, 7.8, 8.3, 8.8, 9.3, 9.8, 10.2, 10.5, 10.9]
-}
-
-df_trend = pd.DataFrame(trend_data)
-
-# Global line chart
-st.subheader("📈 Global Diabetes Prevalence (1990–2045)")
-st.line_chart(df_trend.set_index("Year"), use_container_width=True)
-
-# Country-wise prevalence in 2045 (static map)
-map_data = {
-    "Country": ["Pakistan", "Mexico", "Bangladesh", "India", "China", "Brazil"],
-    "Prevalence_2045": [33.6, 20.0, 16.0, 11.0, 12.0, 10.0]
-}
-df_map = pd.DataFrame(map_data)
-
-st.subheader("🗺 Projected Country-wise Diabetes Prevalence (2045)")
-
-# Plot static choropleth for 2045
-fig = px.choropleth(
-    df_map,
-    locations="Country",
-    locationmode="country names",
-    color="Prevalence_2045",
-    range_color=(0, 35),
-    color_continuous_scale="Reds",
-    title="Diabetes Prevalence by Country in 2045"
-)
-
-fig.update_layout(
-    geo=dict(showframe=False, showcoastlines=True),
-    margin={"r": 0, "t": 50, "l": 0, "b": 0}
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-# Explanation
-st.markdown("""
-### 📊 Summary
-
-*Global Prevalence (Adults 20–79 yrs)*  
-- 1990: *4.7%*
-- 2010: *8.3%*
-- 2019: *9.3%*
-- 2045: *10.9%*
-
-*Country Forecasts for 2045*  
-- *Pakistan*: ~33.6%  
-- *India*: ~11.0%  
-- *Bangladesh*: ~16.0%  
-- *Mexico*: ~20.0%  
-- *China*: ~12.0%  
-- *Brazil*: ~10.0%
-
-Source: International Diabetes Federation (IDF), WHO Projections
-""")
-
-
-
-
 # Patient summary section
 st.markdown("### 🧾 Patient Summary Report")
 
@@ -251,5 +187,74 @@ with st.expander("View Detailed Patient Summary", expanded=True):
     """, unsafe_allow_html=True)
 
     st.table(input_df.T.rename(columns={0: "Value"}))
+st.set_page_config(page_title="Global Diabetes Trends", layout="wide")
 
-    
+st.title("🌍 Global Diabetes Prevalence Dashboard")
+st.markdown("This dashboard visualizes worldwide diabetes prevalence over time, along with forecasts until 2030.")
+
+# ------------------------ #
+# Simulated Global Data from WHO/IDF (1990–2024)
+data = {
+    "Year": list(range(1990, 2025)),
+    "Prevalence (%)": [
+        4.3, 4.5, 4.6, 4.8, 5.0, 5.2, 5.3, 5.5, 5.7, 5.8,
+        6.0, 6.1, 6.3, 6.4, 6.6, 6.8, 7.0, 7.2, 7.5, 7.7,
+        7.9, 8.2, 8.4, 8.6, 8.9, 9.1, 9.4, 9.7, 10.0, 10.3,
+        10.6, 10.9, 11.1, 11.3, 11.5
+    ]
+}
+
+df = pd.DataFrame(data)
+
+# ------------------------ #
+# Forecasting to 2030
+X = df[["Year"]]
+y = df["Prevalence (%)"]
+
+model = LinearRegression()
+model.fit(X, y)
+
+future_years = pd.DataFrame({"Year": list(range(2025, 2031))})
+future_preds = model.predict(future_years)
+
+future_df = future_years.copy()
+future_df["Prevalence (%)"] = future_preds
+
+full_df = pd.concat([df, future_df], ignore_index=True)
+
+# ------------------------ #
+# Line chart of prevalence over time
+st.subheader("📈 Diabetes Prevalence Trend (1990–2030)")
+fig1 = px.line(full_df, x="Year", y="Prevalence (%)", markers=True,
+               title="Global Diabetes Prevalence with Forecast",
+               labels={"Prevalence (%)": "Diabetes Prevalence (%)"})
+st.plotly_chart(fig1, use_container_width=True)
+
+# ------------------------ #
+# Simulated regional map data for 2024
+map_data = pd.DataFrame({
+    "Country": ["India", "China", "United States", "Brazil", "Russia", "Indonesia", "Nigeria", "Germany", "Mexico", "Egypt"],
+    "ISO Code": ["IND", "CHN", "USA", "BRA", "RUS", "IDN", "NGA", "DEU", "MEX", "EGY"],
+    "Prevalence (%)": [11.2, 10.5, 13.1, 10.2, 9.7, 10.8, 8.4, 9.2, 10.6, 9.1],
+    "Year": [2024]*10
+})
+
+# Animated choropleth if multiple years
+st.subheader("🗺 World Map of Diabetes Prevalence (2024)")
+
+fig_map = px.choropleth(
+    map_data,
+    locations="ISO Code",
+    color="Prevalence (%)",
+    hover_name="Country",
+    color_continuous_scale="Reds",
+    range_color=(7, 15),
+    labels={"Prevalence (%)": "Prevalence (%)"},
+    title="Diabetes Prevalence by Country (2024)"
+)
+st.plotly_chart(fig_map, use_container_width=True)
+
+# ------------------------ #
+# Display raw data (optional)
+with st.expander("🧾 View Historical and Forecast Data"):
+    st.dataframe(full_df.style.format({"Prevalence (%)": "{:.2f}"}), use_container_width=True)
