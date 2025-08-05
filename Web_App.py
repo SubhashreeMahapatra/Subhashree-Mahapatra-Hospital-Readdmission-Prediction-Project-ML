@@ -152,61 +152,57 @@ if submit:
     st.plotly_chart(fig, use_container_width=True)
 
 
-# Prevalence trend data (2019, 2030, 2045) based on global estimates
+st.title("🌍 Global Diabetes Prevalence Overview")
+
+# Prevalence trend data (2019, 2030, 2045)
 trend_data = {
     "Year": [2019, 2030, 2045],
     "Prevalence (%)": [9.3, 10.2, 10.9]
 }
-
 df_trend = pd.DataFrame(trend_data)
 
-# Time series line for context above map
+# Line chart for global trend
+st.subheader("📈 Global Diabetes Prevalence Trend")
 st.line_chart(df_trend.set_index("Year"), use_container_width=True)
 
-# Prevalence projections per hypothetical regions/countries (for map)
+# Choropleth data for latest year (2045 only)
 map_data = {
     "Country": ["Global", "Pakistan", "Mexico", "Bangladesh", "India", "China", "Brazil"],
-    "2019": [9.3, 30.8, 16.9, 14.2, 9.6, 10.6, 8.8],
-    "2045": [10.9, 33.6, 20.0, 16.0, 11.0, 12.0, 10.0]
+    "Prevalence (%)": [10.9, 33.6, 20.0, 16.0, 11.0, 12.0, 10.0]
 }
 df_map = pd.DataFrame(map_data)
 
-st.subheader("🗺 Global Diabetes Prevalence Projection (Choropleth)")
-
-# Melt to long for animation
-df_long = df_map.melt(id_vars="Country", value_vars=["2019", "2045"],
-                      var_name="Year", value_name="Prevalence (%)")
-df_long["Year"] = df_long["Year"].astype(int)
+st.subheader("🗺 Projected Diabetes Prevalence by Country (2045)")
 
 fig = px.choropleth(
-    df_long,
+    df_map,
     locations="Country",
     locationmode="country names",
     color="Prevalence (%)",
-    animation_frame="Year",
     range_color=(0, 35),
     color_continuous_scale="Reds",
-    title="Projected Diabetes Prevalence by Country: 2019 vs 2045"
+    title="Diabetes Prevalence by Country (2045)"
 )
 
-fig.update_layout(geo=dict(showframe=False, showcoastlines=True),
-                  margin={"r":0,"t":50,"l":0,"b":0})
+fig.update_layout(
+    geo=dict(showframe=False, showcoastlines=True),
+    margin={"r": 0, "t": 50, "l": 0, "b": 0}
+)
 
 st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("""
 *Global estimates* (adults 20–79 yrs):
-- Prevalence rising from *9.3% in 2019* to *10.9% by 2045* 1  
-- Estimated number of people with diabetes: ~463M (2019) → ~700M (2045) 2
+- Prevalence rising from *9.3% in 2019* to *10.9% by 2045*
+- Estimated number of people with diabetes: ~463M (2019) → ~700M (2045)
 
-*Country projections*:
-- Pakistan: ~30.8% → ~33.6%  
-- India: ~9.6% → ~11.0%  
-- Mexico, Bangladesh, China, Brazil show similar projected increases 3
+*Country projections (2045)*:
+- Pakistan: ~33.6%  
+- India: ~11.0%  
+- Mexico, Bangladesh, China, Brazil: 10–20%
 
-Source: International Diabetes Federation (IDF) / WHO trend estimates  
+Source: International Diabetes Federation (IDF) / WHO estimates
 """)
-
 # Patient summary section
 st.markdown("### 🧾 Patient Summary Report")
 
