@@ -37,51 +37,6 @@ st.markdown("""
 st.markdown('<div class="main-title">🏥 Diabetes Readmission Predictor</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-text">Predict whether a diabetic patient will be readmitted within 30 days of discharge using hospital visit data.</div>', unsafe_allow_html=True)
 
-'''
-# Sidebar Inputs
-st.sidebar.header("📋 Enter Patient Details")
-
-def user_input():
-    race = st.sidebar.selectbox("Race", ['Caucasian', 'AfricanAmerican', 'Asian', 'Hispanic', 'Other'])
-    gender = st.sidebar.selectbox("Gender", ['Male', 'Female'])
-    age = st.sidebar.selectbox("Age Range", ['[0-10]', '[10-20]', '[20-30)', '[30-40)', '[40-50)',
-                                             '[50-60)', '[60-70)', '[70-80)', '[80-90)', '[90-100)'])
-    time_in_hospital = st.sidebar.slider("Time in Hospital (days)", 1, 14, 5)
-    num_lab_procedures = st.sidebar.slider("Lab Procedures", 0, 132, 40)
-    num_procedures = st.sidebar.slider("Other Procedures", 0, 6, 1)
-    num_medications = st.sidebar.slider("Medications", 1, 81, 20)
-    number_outpatient = st.sidebar.slider("Outpatient Visits", 0, 42, 0)
-    number_emergency = st.sidebar.slider("Emergency Visits", 0, 76, 0)
-    number_inpatient = st.sidebar.slider("Inpatient Visits", 0, 21, 0)
-    number_diagnoses = st.sidebar.slider("Diagnoses Count", 1, 16, 5)
-    insulin = st.sidebar.selectbox("Insulin", ['No', 'Steady', 'Up', 'Down'])
-    change = st.sidebar.selectbox("Change in Medication", ['No', 'Ch'])
-    diabetesMed = st.sidebar.selectbox("Diabetes Medication Prescribed", ['Yes', 'No'])
-
-    # Submit Button inside Sidebar
-    submit = st.sidebar.button("🚀 Submit for Prediction")
-
-    data = {
-        'race': race,
-        'gender': gender,
-        'age': age,
-        'time_in_hospital': time_in_hospital,
-        'num_lab_procedures': num_lab_procedures,
-        'num_procedures': num_procedures,
-        'num_medications': num_medications,
-        'number_outpatient': number_outpatient,
-        'number_emergency': number_emergency,
-        'number_inpatient': number_inpatient,
-        'number_diagnoses': number_diagnoses,
-        'insulin': insulin,
-        'change': change,
-        'diabetesMed': diabetesMed,
-        'glipizide': 'No',  # fixed for demo
-        'metformin': 'No'   # fixed for demo
-    }
-
-    return pd.DataFrame([data]), submit
-'''
 # Sidebar Inputs
 st.sidebar.header("📋 Enter Patient Details")
 
