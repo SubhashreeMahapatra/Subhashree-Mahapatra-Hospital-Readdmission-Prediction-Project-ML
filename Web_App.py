@@ -151,11 +151,6 @@ if submit:
     ))
     st.plotly_chart(fig, use_container_width=True)
 
-    # Bar chart of numeric features
-    st.markdown("### 📊 Patient Input Summary")
-    chart_data = input_df.drop(columns=["race", "gender", "age", "insulin", "change", "diabetesMed"])
-    st.bar_chart(chart_data.T)
-
 
 
     # Patient summary section
