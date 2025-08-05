@@ -37,13 +37,14 @@ st.markdown("""
 st.markdown('<div class="main-title">🏥 Diabetes Readmission Predictor</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-text">Predict whether a diabetic patient will be readmitted within 30 days of discharge using hospital visit data.</div>', unsafe_allow_html=True)
 
+'''
 # Sidebar Inputs
 st.sidebar.header("📋 Enter Patient Details")
 
 def user_input():
     race = st.sidebar.selectbox("Race", ['Caucasian', 'AfricanAmerican', 'Asian', 'Hispanic', 'Other'])
     gender = st.sidebar.selectbox("Gender", ['Male', 'Female'])
-    age = st.sidebar.selectbox("Age Range", ['[0-10)', '[10-20)', '[20-30)', '[30-40)', '[40-50)',
+    age = st.sidebar.selectbox("Age Range", ['[0-10]', '[10-20]', '[20-30)', '[30-40)', '[40-50)',
                                              '[50-60)', '[60-70)', '[70-80)', '[80-90)', '[90-100)'])
     time_in_hospital = st.sidebar.slider("Time in Hospital (days)", 1, 14, 5)
     num_lab_procedures = st.sidebar.slider("Lab Procedures", 0, 132, 40)
@@ -80,7 +81,75 @@ def user_input():
     }
 
     return pd.DataFrame([data]), submit
+'''
+# Sidebar Inputs
+st.sidebar.header("📋 Enter Patient Details")
 
+def user_input():
+    race = st.sidebar.selectbox("Race", ['Caucasian', 'AfricanAmerican', 'Asian', 'Hispanic', 'Other'])
+    gender = st.sidebar.selectbox("Gender", ['Male', 'Female'])
+    
+    # Changed from selectbox to numeric input
+    age = st.sidebar.number_input("Age (in years)", min_value=1, max_value=100, value=45, step=1)
+
+    time_in_hospital = st.sidebar.number_input("Time in Hospital (days)", min_value=1, max_value=14, value=5)
+    num_lab_procedures = st.sidebar.number_input("Lab Procedures", min_value=0, max_value=132, value=40)
+    num_procedures = st.sidebar.number_input("Other Procedures", min_value=0, max_value=6, value=1)
+    num_medications = st.sidebar.number_input("Medications", min_value=1, max_value=81, value=20)
+    number_outpatient = st.sidebar.number_input("Outpatient Visits", min_value=0, max_value=42, value=0)
+    number_emergency = st.sidebar.number_input("Emergency Visits", min_value=0, max_value=76, value=0)
+    number_inpatient = st.sidebar.number_input("Inpatient Visits", min_value=0, max_value=21, value=0)
+    number_diagnoses = st.sidebar.number_input("Diagnoses Count", min_value=1, max_value=16, value=5)
+
+    insulin = st.sidebar.selectbox("Insulin", ['No', 'Steady', 'Up', 'Down'])
+    change = st.sidebar.selectbox("Change in Medication", ['No', 'Ch'])
+    diabetesMed = st.sidebar.selectbox("Diabetes Medication Prescribed", ['Yes', 'No'])
+
+    # Submit Button inside Sidebar
+    submit = st.sidebar.button("🚀 Submit for Prediction")
+
+    # For consistent encoding later, age converted back to range category if needed
+    age_group = '[90-100)'
+    if age < 10:
+        age_group = '[0-10)'
+    elif age < 20:
+        age_group = '[10-20)'
+    elif age < 30:
+        age_group = '[20-30)'
+    elif age < 40:
+        age_group = '[30-40)'
+    elif age < 50:
+        age_group = '[40-50)'
+    elif age < 60:
+        age_group = '[50-60)'
+    elif age < 70:
+        age_group = '[60-70)'
+    elif age < 80:
+        age_group = '[70-80)'
+    elif age < 90:
+        age_group = '[80-90)'
+
+    data = {
+        'race': race,
+        'gender': gender,
+        'age': age_group,  # Keep consistent with model expectations
+        'time_in_hospital': time_in_hospital,
+        'num_lab_procedures': num_lab_procedures,
+        'num_procedures': num_procedures,
+        'num_medications': num_medications,
+        'number_outpatient': number_outpatient,
+        'number_emergency': number_emergency,
+        'number_inpatient': number_inpatient,
+        'number_diagnoses': number_diagnoses,
+        'insulin': insulin,
+        'change': change,
+        'diabetesMed': diabetesMed,
+        'glipizide': 'No',  # fixed for demo
+        'metformin': 'No'   # fixed for demo
+    }
+
+    return pd.DataFrame([data]), submit
+    
 # Get user input + submit status
 input_df, submit = user_input()
 
