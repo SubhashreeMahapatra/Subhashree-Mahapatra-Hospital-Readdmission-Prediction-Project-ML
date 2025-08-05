@@ -207,8 +207,8 @@ st.markdown("""
 Source: International Diabetes Federation (IDF) / WHO trend estimates  
 """)
 
-    # Patient summary section
-    st.markdown("### 🧾 Patient Summary Report")
+ # Patient summary section
+st.markdown("### 🧾 Patient Summary Report")
     with st.expander("View Detailed Patient Summary", expanded=True):
         st.markdown(f"""
         <div style="padding:1rem; background-color:#f1f2f6; border-left:5px solid #4e73df; border-radius:0.5rem">
