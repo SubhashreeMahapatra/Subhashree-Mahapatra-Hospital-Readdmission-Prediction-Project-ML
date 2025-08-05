@@ -154,40 +154,8 @@ if submit:
     st.plotly_chart(fig, use_container_width=True)
 
 
-# Patient summary section
-st.markdown("### 🧾 Patient Summary Report")
-
-with st.expander("View Detailed Patient Summary", expanded=True):
-    st.markdown(f"""
-    <div style="padding:1rem; background-color:#f1f2f6; border-left:5px solid #4e73df; border-radius:0.5rem">
-        <h5 style="color:#4e73df;">🧍 Demographics:</h5>
-        <ul>
-            <li><b>Race:</b> {input_df['race'][0]}</li>
-            <li><b>Gender:</b> {input_df['gender'][0]}</li>
-            <li><b>Age Range:</b> {input_df['age'][0]}</li>
-        </ul>
-        <h5 style="color:#4e73df;">🏥 Visit & Diagnosis Info:</h5>
-        <ul>
-            <li><b>Time in Hospital:</b> {input_df['time_in_hospital'][0]} days</li>
-            <li><b>Diagnoses:</b> {input_df['number_diagnoses'][0]}</li>
-            <li><b>Outpatient Visits:</b> {input_df['number_outpatient'][0]}</li>
-            <li><b>Emergency Visits:</b> {input_df['number_emergency'][0]}</li>
-            <li><b>Inpatient Visits:</b> {input_df['number_inpatient'][0]}</li>
-        </ul>
-        <h5 style="color:#4e73df;">💊 Treatment Details:</h5>
-        <ul>
-            <li><b>Medications:</b> {input_df['num_medications'][0]}</li>
-            <li><b>Lab Procedures:</b> {input_df['num_lab_procedures'][0]}</li>
-            <li><b>Other Procedures:</b> {input_df['num_procedures'][0]}</li>
-            <li><b>Insulin:</b> {input_df['insulin'][0]}</li>
-            <li><b>Medication Change:</b> {input_df['change'][0]}</li>
-            <li><b>Diabetes Medication:</b> {input_df['diabetesMed'][0]}</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
     st.table(input_df.T.rename(columns={0: "Value"}))
-st.set_page_config(page_title="Global Diabetes Trends", layout="wide")
+
 
 st.title("🌍 Global Diabetes Prevalence Dashboard")
 st.markdown("This dashboard visualizes worldwide diabetes prevalence over time, along with forecasts until 2030.")
@@ -258,3 +226,34 @@ st.plotly_chart(fig_map, use_container_width=True)
 # Display raw data (optional)
 with st.expander("🧾 View Historical and Forecast Data"):
     st.dataframe(full_df.style.format({"Prevalence (%)": "{:.2f}"}), use_container_width=True)
+# Patient summary section
+st.markdown("### 🧾 Patient Summary Report")
+
+with st.expander("View Detailed Patient Summary", expanded=True):
+    st.markdown(f"""
+    <div style="padding:1rem; background-color:#f1f2f6; border-left:5px solid #4e73df; border-radius:0.5rem">
+        <h5 style="color:#4e73df;">🧍 Demographics:</h5>
+        <ul>
+            <li><b>Race:</b> {input_df['race'][0]}</li>
+            <li><b>Gender:</b> {input_df['gender'][0]}</li>
+            <li><b>Age Range:</b> {input_df['age'][0]}</li>
+        </ul>
+        <h5 style="color:#4e73df;">🏥 Visit & Diagnosis Info:</h5>
+        <ul>
+            <li><b>Time in Hospital:</b> {input_df['time_in_hospital'][0]} days</li>
+            <li><b>Diagnoses:</b> {input_df['number_diagnoses'][0]}</li>
+            <li><b>Outpatient Visits:</b> {input_df['number_outpatient'][0]}</li>
+            <li><b>Emergency Visits:</b> {input_df['number_emergency'][0]}</li>
+            <li><b>Inpatient Visits:</b> {input_df['number_inpatient'][0]}</li>
+        </ul>
+        <h5 style="color:#4e73df;">💊 Treatment Details:</h5>
+        <ul>
+            <li><b>Medications:</b> {input_df['num_medications'][0]}</li>
+            <li><b>Lab Procedures:</b> {input_df['num_lab_procedures'][0]}</li>
+            <li><b>Other Procedures:</b> {input_df['num_procedures'][0]}</li>
+            <li><b>Insulin:</b> {input_df['insulin'][0]}</li>
+            <li><b>Medication Change:</b> {input_df['change'][0]}</li>
+            <li><b>Diabetes Medication:</b> {input_df['diabetesMed'][0]}</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
